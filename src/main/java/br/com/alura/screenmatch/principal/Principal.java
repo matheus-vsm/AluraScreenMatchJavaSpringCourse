@@ -10,10 +10,7 @@ import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Principal {
@@ -24,7 +21,7 @@ public class Principal {
     private final String ENDERECO = "https://www.omdbapi.com/?t="; //variaveis que nunca serao modificadas
     private final String API_KEY = "&apikey=6585022c";
 
-    public void exibeMenu(){
+    public void exibeMenu() {
         System.out.print("Digite o nome da série: ");
         var nomeSerie = input.nextLine();
         var json = consumoApi.obterDados(ENDERECO + nomeSerie.replace(" ", "+") + API_KEY);
@@ -33,7 +30,7 @@ public class Principal {
         System.out.println(dadosSerie);
 
         List<DadosTemporada> temporadas = new ArrayList<>();
-        for (int i = 1; i <= dadosSerie.totalTemporadas(); i++){
+        for (int i = 1; i <= dadosSerie.totalTemporadas(); i++) {
             json = consumoApi.obterDados(ENDERECO + nomeSerie.replace(" ", "+") + "&season=" + i + API_KEY);
             DadosTemporada dadosTemporada = conversor.obterDados(json, DadosTemporada.class);
             temporadas.add(dadosTemporada);
@@ -46,8 +43,8 @@ public class Principal {
         List<DadosEpidodio> dadosEpidodios = temporadas.stream()
                 // para cada temporada (t), obtém seu Stream de episódios e "achata" todos em um único Stream de episódios
                 .flatMap(t -> t.episodios().stream())
-                        .collect(Collectors.toList()); //permite modificações futuras na lista, MUTÁVEL
-                        // .toList(); //não permite modificações, forma uma lista IMUTÁVEL
+                .collect(Collectors.toList()); //permite modificações futuras na lista, MUTÁVEL
+        // .toList(); //não permite modificações, forma uma lista IMUTÁVEL
 
         System.out.println("\nTop 10 Episódios:");
         dadosEpidodios.stream() // cria um Stream a partir da lista 'dadosEpidodios'
@@ -75,6 +72,17 @@ public class Principal {
                         .map(d -> new Episodio(t.numero(), d)))
                 .collect(Collectors.toList()); // Para cada episódio 'd', cria um novo objeto Episodio com o número da temporada e o dadosEpisodio
         episodios.forEach(System.out::println);
+
+        System.out.print("\nDigite o titulo de um episodio: ");
+        var trechoTitulo = input.nextLine();
+        Optional<Episodio> episodioBuscado = episodios.stream()
+                .filter(e -> e.getTitulo().toUpperCase().contains(trechoTitulo.toUpperCase()))
+                .findFirst();
+        if (episodioBuscado.isPresent()) {
+            System.out.println("Episódio encontrado!\nTemporada: " + episodioBuscado.get().getTemporada());
+        } else {
+            System.out.println("Episódio não encontrado!");
+        }
 
         System.out.print("\nA partir de que ano vc deseja ver os episodios? ");
         var ano = input.nextInt();
