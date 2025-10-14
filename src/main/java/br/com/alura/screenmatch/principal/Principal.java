@@ -49,12 +49,26 @@ public class Principal {
                         .collect(Collectors.toList()); //permite modificações futuras na lista, MUTÁVEL
                         // .toList(); //não permite modificações, forma uma lista IMUTÁVEL
 
-        System.out.println("\nTop 5 Episódios:");
+        System.out.println("\nTop 10 Episódios:");
         dadosEpidodios.stream() // cria um Stream a partir da lista 'dadosEpidodios'
                 .filter(e -> !e.avalicacao().equalsIgnoreCase("N/A"))
                 .sorted(Comparator.comparing(DadosEpidodio::avalicacao).reversed()) // ordena os episódios pelo valor retornado por 'avalicacao' (do menor para o maior), e .reversed() inverte para do maior para o menor
-                .limit(5)
+                .limit(10)
+                .map(e -> e.titulo().toUpperCase())
                 .forEach(System.out::println);
+
+        //peek = debug do stream
+        /*System.out.println("\nTop 10 episódios");
+        dadosEpisodios.stream()
+                .filter(e -> !e.avaliacao().equalsIgnoreCase("N/A"))
+                .peek(e -> System.out.println("Primeiro filtro(N/A) " + e))
+                .sorted(Comparator.comparing(DadosEpisodio::avaliacao).reversed())
+                .peek(e -> System.out.println("Ordenação " + e))
+                .limit(10)
+                .peek(e -> System.out.println("Limite " + e))
+                .map(e -> e.titulo().toUpperCase())
+                .peek(e -> System.out.println("Mapeamento " + e))
+                .forEach(System.out::println);*/
 
         List<Episodio> episodios = temporadas.stream()
                 .flatMap(t -> t.episodios().stream()
