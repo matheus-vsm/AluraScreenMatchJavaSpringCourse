@@ -6,7 +6,10 @@ import br.com.alura.screenmatch.model.DadosTemporada;
 import br.com.alura.screenmatch.model.Episodio;
 import br.com.alura.screenmatch.service.ConsumoApi;
 import br.com.alura.screenmatch.service.ConverteDados;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -58,5 +61,20 @@ public class Principal {
                         .map(d -> new Episodio(t.numero(), d)))
                 .collect(Collectors.toList()); // Para cada episódio 'd', cria um novo objeto Episodio com o número da temporada e o dadosEpisodio
         episodios.forEach(System.out::println);
+
+        System.out.print("\nA partir de que ano vc deseja ver os episodios? ");
+        var ano = input.nextInt();
+        input.nextLine();
+
+        LocalDate dataBusca = LocalDate.of(ano, 1, 1);
+
+        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        episodios.stream()
+                .filter(e -> e.getDataLancamento() != null && e.getDataLancamento().isAfter(dataBusca))
+                .forEach(e -> System.out.println(
+                        "Temporada " + e.getTemporada() +
+                                " - Episódio: " + e.getTitulo() +
+                                " - Data de Lançamento: " + e.getDataLancamento().format(formatador)
+                ));
     }
 }
