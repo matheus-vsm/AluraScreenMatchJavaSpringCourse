@@ -98,5 +98,11 @@ public class Principal {
                                 " - Episódio: " + e.getTitulo() +
                                 " - Data de Lançamento: " + e.getDataLancamento().format(formatador)
                 ));
+
+        Map<Integer, Double> avaliacoesPorTemporada = episodios.stream()
+                .filter(e -> e.getAvalicacao() > 0.0)
+                .collect(Collectors.groupingBy(Episodio::getTemporada,
+                        Collectors.averagingDouble(Episodio::getAvalicacao)));
+        System.out.println(avaliacoesPorTemporada);
     }
 }
