@@ -22,7 +22,7 @@ public class Serie {
     private String poster;
     private String sinopse;
 //    @Transient // ignora a persistencia dos dados desse campo no banco
-    @OneToMany(mappedBy = "serie") // uma serie para muitos episodios | atributo que indica o relacionamento em Serie
+    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL) // uma serie para muitos episodios | atributo que indica o relacionamento em Serie | sempre que a serie for modificada, o episodio tbm vai ser modificado
     private List<Episodio> episodios = new ArrayList<>();
 
     public Serie() {
