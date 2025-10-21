@@ -24,6 +24,9 @@ public class Serie {
     @Transient // ignora a persistencia dos dados desse campo no banco
     private List<Episodio> episodios = new ArrayList<>();
 
+    public Serie() {
+    }
+
     public Serie(DadosSerie dadosSerie) {
         this.titulo = dadosSerie.titulo();
         this.totalTemporadas = dadosSerie.totalTemporadas();
