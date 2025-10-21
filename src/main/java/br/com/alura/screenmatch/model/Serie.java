@@ -21,7 +21,8 @@ public class Serie {
     private String atores;
     private String poster;
     private String sinopse;
-    @Transient // ignora a persistencia dos dados desse campo no banco
+//    @Transient // ignora a persistencia dos dados desse campo no banco
+    @OneToMany(mappedBy = "serie") // uma serie para muitos episodios | atributo que indica o relacionamento em Serie
     private List<Episodio> episodios = new ArrayList<>();
 
     public Serie() {
