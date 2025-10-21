@@ -22,7 +22,9 @@ public class Serie {
     private String poster;
     private String sinopse;
 //    @Transient // ignora a persistencia dos dados desse campo no banco
-    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL) // uma serie para muitos episodios | atributo que indica o relacionamento em Serie | sempre que a serie for modificada, o episodio tbm vai ser modificado
+    @OneToMany(mappedBy = "serie", // uma serie para muitos episodios | atributo que indica o relacionamento em Serie
+            cascade = CascadeType.ALL, // sempre que a serie for modificada, o episodio tbm vai ser modificado
+            fetch = FetchType.EAGER)  // fetch é como as entidadas relacionadas são carregadas | traz as entidades de forma "ansiosa", carrega as entidades mesmo que não seja pedido (o lazy que é padrão só traz se deixarmos explicito, tipo getEpisodios)
     private List<Episodio> episodios = new ArrayList<>();
 
     public Serie() {
@@ -109,6 +111,11 @@ public class Serie {
     }
 
     public void setEpisodios(List<Episodio> episodios) {
+        // Essa linha garante que cada episódio da lista tenha sua referência à série atual corretamente configurada.
+        // Ou seja, se você tiver uma classe Serie com vários Episodio, essa linha estabelece o relacionamento bidirecional:
+        // - A série sabe quais episódios tem (this.episodios = episodios);
+        // - Cada episódio também sabe a qual série pertence (e.setSerie(this)).
+        episodios.forEach(e -> e.setSerie(this)); // configuração da Chave Estrangeira
         this.episodios = episodios;
     }
 
@@ -120,6 +127,7 @@ public class Serie {
                 ", avaliacao=" + avaliacao +
                 ", atores='" + atores + '\'' +
                 ", poster='" + poster + '\'' +
-                ", sinopse='" + sinopse + '\'';
+                ", sinopse='" + sinopse + '\'' +
+                ", episodios='" + episodios + '\'';
     }
 }
