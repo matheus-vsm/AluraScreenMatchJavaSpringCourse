@@ -135,7 +135,7 @@ public class Principal {
         input.nextLine();
         System.out.print("Avaliações a partir de que valor: ");
         var avaliacao = input.nextDouble();
-        List<Serie> seriesEncontradas = repositorio.findByTotalTemporadasLessThanEqualAndAvaliacaoGreaterThanEqualOrderByTotalTemporadasDesc(maxTemporadas, avaliacao);
+        List<Serie> seriesEncontradas = repositorio.seriesPorTemporadaAvaliacao(maxTemporadas, avaliacao);
         System.out.println("\nSéries Filtradas:");
         seriesEncontradas.forEach(s ->
                 System.out.println("Temporadas: " + s.getTotalTemporadas() + " - Avaliação: " + s.getAvaliacao() + " - " + s.getTitulo()));
