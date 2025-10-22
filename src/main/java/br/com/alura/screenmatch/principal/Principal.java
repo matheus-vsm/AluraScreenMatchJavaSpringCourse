@@ -38,6 +38,7 @@ public class Principal {
                     5 - Listar Séries por Ator
                     6 - Listar as Top 5 Séries
                     7 - Listar Séries por Categoria
+                    8 - Listar Séries por Quantidade de Temporadas
                     
                     0 - Sair                                 
                     """;
@@ -67,6 +68,9 @@ public class Principal {
                     break;
                 case 7:
                     listarSeriesPorCategoria();
+                    break;
+                case 8:
+                    listarSeriesPorTemporadas();
                     break;
                 case 0:
                     System.out.println("\nSaindo...");
@@ -123,6 +127,18 @@ public class Principal {
         List<Serie> seriesPorCategoria = repositorio.findByGenero(categoria);
         System.out.println("\nSéries da Categoria " + nomeGenero);
         seriesPorCategoria.forEach(System.out::println);
+    }
+
+    private void listarSeriesPorTemporadas() {
+        System.out.print("\nDigite a quantidade de Temporadas: ");
+        var maxTemporadas = input.nextInt();
+        input.nextLine();
+        System.out.print("Avaliações a partir de que valor: ");
+        var avaliacao = input.nextDouble();
+        List<Serie> seriesEncontradas = repositorio.findByTotalTemporadasLessThanEqualAndAvaliacaoGreaterThanEqualOrderByTotalTemporadasDesc(maxTemporadas, avaliacao);
+        System.out.println("\nSéries Filtradas:");
+        seriesEncontradas.forEach(s ->
+                System.out.println("Temporadas: " + s.getTotalTemporadas() + " - Avaliação: " + s.getAvaliacao() + " - " + s.getTitulo()));
     }
 
     private void buscarSerieWeb() {
