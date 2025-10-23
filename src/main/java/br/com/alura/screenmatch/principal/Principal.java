@@ -39,7 +39,8 @@ public class Principal {
                     7 - Listar Séries por Categoria
                     8 - Listar Séries por Quantidade de Temporadas
                     9 - Listar Episódios por Trecho
-                    10 - Listar os Top 5 Episódios
+                    10 - Listar os Top 5 Episódios por Série
+                    11 - Listar Episódios a Partir de uma Data
                     
                     0 - Sair                                 
                     """;
@@ -78,6 +79,10 @@ public class Principal {
                     break;
                 case 10:
                     listarTop5Episodios();
+                    break;
+                case 11:
+                    listarEpisodiosAposData();
+                    break;
                 case 0:
                     System.out.println("\nSaindo...");
                     break;
@@ -157,12 +162,26 @@ public class Principal {
 
     private void listarTop5Episodios() {
         listarSeriePorTitulo();
-        if (serieBusca.isPresent()){
+        if (serieBusca.isPresent()) {
             Serie serie = serieBusca.get();
             List<Episodio> topEpisodios = repositorio.top5EpisodiosPorSerie(serie);
             System.out.println("Top 5 Episódios de " + serie.getTitulo() + ":");
             topEpisodios.forEach(e ->
                     System.out.printf("Avaliação: %s - Temporada %s - Episódio %s - Título: %s\n", e.getAvaliacao(), e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo()));
+        }
+    }
+
+    private void listarEpisodiosAposData() {
+        listarSeriePorTitulo();
+        if (serieBusca.isPresent()) {
+            Serie serie = serieBusca.get();
+            System.out.print("\nDigite o Ano de Lançamento: ");
+            var anoLancamento = input.nextInt();
+            input.nextLine();
+            List<Episodio> episodiosAno = repositorio.episodiosPorSerieAposAno(serie, anoLancamento);
+            System.out.println("Todos os Episódios de " + serie.getTitulo() + " a partir do Ano de " + anoLancamento);
+            episodiosAno.forEach(e ->
+                    System.out.printf("Data de Lançamento: %s - Temporada %s - Episódio %s - Título: %s\n", e.getDataLancamento(), e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo()));
         }
     }
 
