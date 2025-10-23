@@ -4,9 +4,7 @@ import br.com.alura.screenmatch.model.*;
 import br.com.alura.screenmatch.repository.SerieRepository;
 import br.com.alura.screenmatch.service.ConsumoApi;
 import br.com.alura.screenmatch.service.ConverteDados;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.text.BreakIterator;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,6 +18,7 @@ public class Principal {
     private List<DadosSerie> dadosSeries = new ArrayList<>();
     private SerieRepository repositorio;
     private List<Serie> series = new ArrayList<>();
+    private Optional<Serie> serieBusca;
 
     public Principal(SerieRepository repositorio) {
         this.repositorio = repositorio;
@@ -40,6 +39,7 @@ public class Principal {
                     7 - Listar Séries por Categoria
                     8 - Listar Séries por Quantidade de Temporadas
                     9 - Listar Episódios por Trecho
+                    10 - Listar os Top 5 Episódios
                     
                     0 - Sair                                 
                     """;
@@ -76,6 +76,8 @@ public class Principal {
                 case 9:
                     listarEpisodioPorTrecho();
                     break;
+                case 10:
+                    listarTop5Episodios();
                 case 0:
                     System.out.println("\nSaindo...");
                     break;
@@ -99,10 +101,10 @@ public class Principal {
     private void listarSeriePorTitulo() {
         System.out.print("\nEscolha uma serie pelo nome: ");
         var nomeSerie = input.nextLine();
-        Optional<Serie> serieBuscada = repositorio.findByTituloContainingIgnoreCase(nomeSerie);
+        serieBusca = repositorio.findByTituloContainingIgnoreCase(nomeSerie);
 
-        if (serieBuscada.isPresent()) {
-            System.out.println("Dados da Série: " + serieBuscada.get());
+        if (serieBusca.isPresent()) {
+            System.out.println("Dados da Série: " + serieBusca.get());
         } else {
             System.out.println("Série Não Encontrada!");
         }
@@ -146,11 +148,22 @@ public class Principal {
     }
 
     private void listarEpisodioPorTrecho() {
-        System.out.print("\nDigite um trecho de um episódio: ");
+        System.out.print("\nDigite um trecho de um Episódio: ");
         var trechoEpisodio = input.nextLine();
         List<Episodio> episodiosEncontrados = repositorio.episodiosPorTrecho(trechoEpisodio);
         episodiosEncontrados.forEach(e ->
                 System.out.printf("Série: %s - Temporada %s - Episódio %s - Título: %s\n", e.getSerie().getTitulo(), e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo()));
+    }
+
+    private void listarTop5Episodios() {
+        listarSeriePorTitulo();
+        if (serieBusca.isPresent()){
+            Serie serie = serieBusca.get();
+            List<Episodio> topEpisodios = repositorio.top5EpisodiosPorSerie(serie);
+            System.out.println("Top 5 Episódios de " + serie.getTitulo() + ":");
+            topEpisodios.forEach(e ->
+                    System.out.printf("Avaliação: %s - Temporada %s - Episódio %s - Título: %s\n", e.getAvaliacao(), e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo()));
+        }
     }
 
     private void buscarSerieWeb() {
@@ -175,9 +188,7 @@ public class Principal {
         System.out.print("\nEscolha uma serie pelo nome: ");
         var nomeSerie = input.nextLine();
 
-//        Optional<Serie> serie = series.stream()
-//                .filter(s -> s.getTitulo().toUpperCase().contains(nomeSerie.toUpperCase()))
-//                .findFirst();
+//        Optional<Serie> serie = series.stream().filter(s -> s.getTitulo().toUpperCase().contains(nomeSerie.toUpperCase())).findFirst();
         Optional<Serie> serie = repositorio.findByTituloContainingIgnoreCase(nomeSerie);
 
         if (serie.isPresent()) {
