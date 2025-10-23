@@ -39,6 +39,7 @@ public class Principal {
                     6 - Listar as Top 5 Séries
                     7 - Listar Séries por Categoria
                     8 - Listar Séries por Quantidade de Temporadas
+                    9 - Listar Episódios por Trecho
                     
                     0 - Sair                                 
                     """;
@@ -71,6 +72,9 @@ public class Principal {
                     break;
                 case 8:
                     listarSeriesPorTemporadas();
+                    break;
+                case 9:
+                    listarEpisodioPorTrecho();
                     break;
                 case 0:
                     System.out.println("\nSaindo...");
@@ -139,6 +143,14 @@ public class Principal {
         System.out.println("\nSéries Filtradas:");
         seriesEncontradas.forEach(s ->
                 System.out.println("Temporadas: " + s.getTotalTemporadas() + " - Avaliação: " + s.getAvaliacao() + " - " + s.getTitulo()));
+    }
+
+    private void listarEpisodioPorTrecho() {
+        System.out.print("\nDigite um trecho de um episódio: ");
+        var trechoEpisodio = input.nextLine();
+        List<Episodio> episodiosEncontrados = repositorio.episodiosPorTrecho(trechoEpisodio);
+        episodiosEncontrados.forEach(e ->
+                System.out.printf("Série: %s - Temporada %s - Episódio %s - Título: %s\n", e.getSerie().getTitulo(), e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo()));
     }
 
     private void buscarSerieWeb() {
