@@ -21,4 +21,9 @@ public class SerieController {
                 .map(s -> new SerieDTO(s.getId(), s.getTitulo(), s.getTotalTemporadas(), s.getAvaliacao(), s.getGenero(), s.getAtores(), s.getPoster(), s.getSinopse()))
                 .collect(Collectors.toList());
     }
+
+    @GetMapping("/inicio")
+    public String inicio() {
+        return "oi";
+    }
 }
