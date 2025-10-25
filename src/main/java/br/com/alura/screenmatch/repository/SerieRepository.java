@@ -36,6 +36,7 @@ public interface SerieRepository extends JpaRepository<Serie, Long> { // long = 
     @Query("SELECT e FROM Serie s JOIN s.episodios e WHERE s = :serie AND YEAR(e.dataLancamento) >= :anoLancamento")
     List<Episodio> episodiosPorSerieAposAno(Serie serie, int anoLancamento);
 
+    // caso os melhores episodios estejam em uma ou duas series, so elas irao aparecer por conta do LEFT JOIN. a função abaixo é uma consulta INNER JOIN, na qual agrupa pelas series, não "duplicando" os retornos com series iguais
 //    List<Serie> findTop5ByOrderByEpisodiosDataLancamentoDesc();
     @Query("SELECT s FROM Serie s JOIN s.episodios e GROUP BY s ORDER BY MAX(e.dataLancamento) DESC LIMIT 5")
     List<Serie> encontrarEpisodiosMaisRecentes();
