@@ -2,6 +2,7 @@ package br.com.alura.screenmatch.service;
 
 import br.com.alura.screenmatch.dto.EpisodioDTO;
 import br.com.alura.screenmatch.dto.SerieDTO;
+import br.com.alura.screenmatch.model.Episodio;
 import br.com.alura.screenmatch.model.Serie;
 import br.com.alura.screenmatch.repository.SerieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,22 +18,22 @@ public class SerieService { // conterá a lógica de negócios de Serie
     private SerieRepository serieRepositorio;
 
     // conversor de dados Serie -> SerieDTO | private pois será usado apenas nessa classe
-    private List<SerieDTO> converteDados(List<Serie> series) {
+    private List<SerieDTO> converteDadosSerie(List<Serie> series) {
         return series.stream()
                 .map(s -> new SerieDTO(s.getId(), s.getTitulo(), s.getTotalTemporadas(), s.getAvaliacao(), s.getGenero(), s.getAtores(), s.getPoster(), s.getSinopse()))
                 .collect(Collectors.toList());
     }
 
     public List<SerieDTO> obterTodasSeries() {
-        return converteDados(serieRepositorio.findAll());
+        return converteDadosSerie(serieRepositorio.findAll());
     }
 
     public List<SerieDTO> obterTop5Series() {
-        return converteDados(serieRepositorio.findTop5ByOrderByAvaliacaoDesc());
+        return converteDadosSerie(serieRepositorio.findTop5ByOrderByAvaliacaoDesc());
     }
 
     public List<SerieDTO> obterLancamentos() {
-        return converteDados(serieRepositorio.encontrarEpisodiosMaisRecentes());
+        return converteDadosSerie(serieRepositorio.encontrarEpisodiosMaisRecentes());
     }
 
     public SerieDTO obterPorId(Long id) {
@@ -55,5 +56,11 @@ public class SerieService { // conterá a lógica de negócios de Serie
                     .collect(Collectors.toList());
         }
         return null;
+    }
+
+    public List<EpisodioDTO> obterTemporadasPorNumero(Long id, Long numero) {
+        return serieRepositorio.obterEpisodiosPorTemporada(id, numero).stream()
+                .map(e -> new EpisodioDTO(e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo()))
+                .collect(Collectors.toList());
     }
 }
